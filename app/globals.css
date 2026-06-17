@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --font-display: "Playfair Display";
+  --font-sans: "Inter";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5efe3;
+  color: #023632;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.paper-grid {
+  background-image:
+    linear-gradient(rgba(2, 54, 50, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 54, 50, 0.055) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
