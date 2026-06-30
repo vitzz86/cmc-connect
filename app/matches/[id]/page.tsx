@@ -1,19 +1,36 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Database, Mail, MapPin, ShieldCheck } from "lucide-react";
-import partnersData from "../../data/partners.json";
 import { categoryCopy } from "../../lib/categories";
 import { AppHeader } from "../../components/AppHeader";
 import { useFlow } from "../../lib/flow-context";
 import type { Partner } from "../../lib/types";
 
-const partners = partnersData as Partner[];
-
 export default function MatchDetailPage({ params }: { params: { id: string } }) {
   const { locale, t, matches } = useFlow();
+  const [fallbackPartner, setFallbackPartner] = useState<Partner | null>(null);
   const match = matches.find((item) => item.partner.id === params.id);
-  const partner = match?.partner || partners.find((item) => item.id === params.id);
+  const partner = match?.partner || fallbackPartner;
+
+  useEffect(() => {
+    if (match?.partner) return;
+    let active = true;
+
+    fetch(`/api/partners?id=${encodeURIComponent(params.id)}`)
+      .then((response) => response.json())
+      .then((payload) => {
+        if (active) setFallbackPartner((payload.partner || null) as Partner | null);
+      })
+      .catch(() => {
+        if (active) setFallbackPartner(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [params.id, match?.partner]);
 
   return (
     <main className="min-h-screen bg-ivory text-ink">
@@ -31,8 +48,9 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
               <h1 className="mt-3 font-display text-5xl font-black leading-tight">{partner.Company}</h1>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="bg-ivory px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-ink/65">
-                  {categoryCopy[partner.Category as keyof typeof categoryCopy]?.[locale] || partner.Category}
+                  {categoryCopy[partner.IndustriID]?.[locale] || partner.IndustriID}
                 </span>
+                <span className="bg-ivory px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-ink/65">{partner.Role}</span>
                 {match ? <span className="bg-ink px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-white">{t.results.score}: {match.score}</span> : null}
               </div>
 
@@ -42,8 +60,8 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
                   <p className="mt-3 text-sm leading-6 text-ink/72">{partner.Product || "-"}</p>
                 </div>
                 <div className="border border-ink/10 bg-[#fffdf8] p-5">
-                  <div className="text-xs font-black uppercase tracking-[0.18em] text-ink/45">{t.results.brand}</div>
-                  <p className="mt-3 text-sm leading-6 text-ink/72">{partner.Brand || "-"}</p>
+                  <div className="text-xs font-black uppercase tracking-[0.18em] text-ink/45">Sub-sector</div>
+                  <p className="mt-3 text-sm leading-6 text-ink/72">{partner.SubSector || partner.Brand || "-"}</p>
                 </div>
                 <div className="border border-ink/10 bg-[#fffdf8] p-5 md:col-span-2">
                   <div className="text-xs font-black uppercase tracking-[0.18em] text-ink/45">{t.results.address}</div>

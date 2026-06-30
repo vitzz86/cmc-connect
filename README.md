@@ -1,6 +1,6 @@
 # CMC Connect
 
-CMC Connect is a bilingual Indonesian/English matchmaking demo for CEO Masterclass participants. Users can fill a company profile, upload a PDF/PPTX deck for DeepSeek extraction, and review the top five partner/supplier matches from the supplied database.
+CMC Connect is a bilingual Indonesian/English matchmaking demo for CEO Masterclass participants. Users can fill a company profile, upload a PDF/PPTX deck for profile summarization, and review the top five partner/supplier matches from the supplied database.
 
 ## Run Locally
 
@@ -10,7 +10,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Add your DeepSeek key to `.env.local`:
+Add the configured extraction key to `.env.local`:
 
 ```bash
 DEEPSEEK_API_KEY=...
@@ -23,5 +23,5 @@ Then open `http://127.0.0.1:3000`.
 - Bilingual UI toggle: Bahasa Indonesia and English.
 - Static partner database generated from the Excel attachment.
 - Top 5 matching engine based on category, needs, keywords, product fit, and location.
-- Deck extraction API route for PDF/PPTX files using DeepSeek's OpenAI-compatible API.
+- Deck extraction API route for PDF/PPTX files.
 - CEO Masterclass and Kadin logo treatment inspired by the supplied PDF.

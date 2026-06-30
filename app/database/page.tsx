@@ -1,20 +1,35 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Search } from "lucide-react";
-import partnersData from "../data/partners.json";
 import { categories, categoryCopy } from "../lib/categories";
 import { AppHeader } from "../components/AppHeader";
 import { useFlow } from "../lib/flow-context";
 import type { Partner } from "../lib/types";
 
-const partners = partnersData as Partner[];
-
 export default function DatabasePage() {
   const { locale, t } = useFlow();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/partners")
+      .then((response) => response.json())
+      .then((payload) => {
+        if (active) setPartners((payload.partners || []) as Partner[]);
+      })
+      .catch(() => {
+        if (active) setPartners([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const filteredPartners = useMemo(() => {
     const query = search.toLowerCase().trim();
@@ -23,7 +38,7 @@ export default function DatabasePage() {
       const searchMatch = !query || partner.searchText.includes(query);
       return categoryMatch && searchMatch;
     });
-  }, [search, categoryFilter]);
+  }, [partners, search, categoryFilter]);
 
   return (
     <main className="min-h-screen bg-ivory text-ink">
@@ -65,12 +80,19 @@ export default function DatabasePage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {partners.length === 0 ? (
+            <div className="border border-dashed border-ink/20 bg-white p-8 text-sm font-semibold text-ink/60 md:col-span-2 xl:col-span-3">
+              {t.status.extracting}
+            </div>
+          ) : null}
+
           {filteredPartners.slice(0, 90).map((partner) => (
             <article key={partner.id} className="flex min-h-[230px] flex-col border border-ink/10 bg-white p-5">
               <h2 className="font-black leading-tight">{partner.Company}</h2>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-gold">
-                {categoryCopy[partner.Category as keyof typeof categoryCopy]?.[locale] || partner.Category}
+                {categoryCopy[partner.IndustriID]?.[locale] || partner.IndustriID}
               </p>
+              <p className="mt-2 text-xs font-semibold text-ink/45">{partner.Role} · {partner.Province || "-"}</p>
               <p className="mt-4 line-clamp-4 text-sm leading-6 text-ink/68">{partner.Product || "-"}</p>
               <p className="mt-4 text-xs font-semibold leading-5 text-ink/45">
                 {locale === "id" ? "Kontak partner dikelola oleh admin CMC." : "Partner contact is handled by CMC admin."}

@@ -1,0 +1,195 @@
+{
+  "categories": [
+    "Energi",
+    "Jasa",
+    "Kesehatan",
+    "Keuangan & Perbankan",
+    "Komoditas & Ekspor",
+    "Makanan & Minuman",
+    "Manufaktur",
+    "Pendidikan",
+    "Properti",
+    "Ritel & Perdagangan",
+    "Teknologi"
+  ],
+  "categoryLabels": {
+    "Energi": {
+      "id": "Energi",
+      "en": "Energy"
+    },
+    "Jasa": {
+      "id": "Jasa",
+      "en": "Services"
+    },
+    "Kesehatan": {
+      "id": "Kesehatan",
+      "en": "Healthcare"
+    },
+    "Keuangan & Perbankan": {
+      "id": "Keuangan & Perbankan",
+      "en": "Finance & Banking"
+    },
+    "Komoditas & Ekspor": {
+      "id": "Komoditas & Ekspor",
+      "en": "Commodities & Export"
+    },
+    "Makanan & Minuman": {
+      "id": "Makanan & Minuman",
+      "en": "Food & Beverage"
+    },
+    "Manufaktur": {
+      "id": "Manufaktur",
+      "en": "Manufacturing"
+    },
+    "Pendidikan": {
+      "id": "Pendidikan",
+      "en": "Education"
+    },
+    "Properti": {
+      "id": "Properti",
+      "en": "Real Estate"
+    },
+    "Ritel & Perdagangan": {
+      "id": "Ritel & Perdagangan",
+      "en": "Retail & Commerce"
+    },
+    "Teknologi": {
+      "id": "Teknologi",
+      "en": "Technology"
+    }
+  },
+  "partnerTypes": [
+    "Cari Supplier",
+    "Cari Buyer",
+    "Cari Partner",
+    "Cari Investor",
+    "Cari Distributor",
+    "Cari Penyedia Jasa"
+  ],
+  "partnerTypeLabels": {
+    "Cari Supplier": {
+      "id": "Cari Supplier",
+      "en": "Find Supplier"
+    },
+    "Cari Buyer": {
+      "id": "Cari Buyer",
+      "en": "Find Buyer"
+    },
+    "Cari Partner": {
+      "id": "Cari Partner",
+      "en": "Find Partner"
+    },
+    "Cari Investor": {
+      "id": "Cari Investor",
+      "en": "Find Investor"
+    },
+    "Cari Distributor": {
+      "id": "Cari Distributor",
+      "en": "Find Distributor"
+    },
+    "Cari Penyedia Jasa": {
+      "id": "Cari Penyedia Jasa",
+      "en": "Find Service Provider"
+    }
+  },
+  "provinces": [
+    "Aceh",
+    "Bali",
+    "Banten",
+    "DI Yogyakarta",
+    "DKI Jakarta",
+    "Jawa Barat",
+    "Jawa Tengah",
+    "Jawa Timur",
+    "Kalimantan Barat",
+    "Kalimantan Selatan",
+    "Kalimantan Timur",
+    "Lampung",
+    "NTB",
+    "NTT",
+    "Papua",
+    "Riau",
+    "Sulawesi Selatan",
+    "Sulawesi Tengah",
+    "Sulawesi Utara",
+    "Sumatera Barat",
+    "Sumatera Selatan",
+    "Sumatera Utara"
+  ],
+  "roles": [
+    "Education / R&D",
+    "Financial Institution",
+    "Government / Association",
+    "Producer / Manufacturer",
+    "Service Provider",
+    "Technology Provider",
+    "Trader / Exporter"
+  ],
+  "roleIntentMatrix": {
+    "Education / R&D": {
+      "Cari Supplier": 0.0,
+      "Cari Buyer": 0.0,
+      "Cari Partner": 0.5,
+      "Cari Investor": 0.5,
+      "Cari Distributor": 0.0,
+      "Cari Penyedia Jasa": 0.5
+    },
+    "Financial Institution": {
+      "Cari Supplier": 0.0,
+      "Cari Buyer": 0.0,
+      "Cari Partner": 0.5,
+      "Cari Investor": 1.0,
+      "Cari Distributor": 0.0,
+      "Cari Penyedia Jasa": 0.5
+    },
+    "Government / Association": {
+      "Cari Supplier": 0.0,
+      "Cari Buyer": 0.5,
+      "Cari Partner": 0.5,
+      "Cari Investor": 1.0,
+      "Cari Distributor": 0.5,
+      "Cari Penyedia Jasa": 0.5
+    },
+    "Producer / Manufacturer": {
+      "Cari Supplier": 1.0,
+      "Cari Buyer": 0.5,
+      "Cari Partner": 1.0,
+      "Cari Investor": 0.0,
+      "Cari Distributor": 0.5,
+      "Cari Penyedia Jasa": 0.0
+    },
+    "Service Provider": {
+      "Cari Supplier": 0.0,
+      "Cari Buyer": 0.0,
+      "Cari Partner": 0.5,
+      "Cari Investor": 0.0,
+      "Cari Distributor": 0.5,
+      "Cari Penyedia Jasa": 1.0
+    },
+    "Technology Provider": {
+      "Cari Supplier": 0.0,
+      "Cari Buyer": 0.0,
+      "Cari Partner": 0.5,
+      "Cari Investor": 0.0,
+      "Cari Distributor": 0.0,
+      "Cari Penyedia Jasa": 1.0
+    },
+    "Trader / Exporter": {
+      "Cari Supplier": 0.5,
+      "Cari Buyer": 1.0,
+      "Cari Partner": 1.0,
+      "Cari Investor": 0.0,
+      "Cari Distributor": 1.0,
+      "Cari Penyedia Jasa": 0.0
+    }
+  },
+  "weights": {
+    "category": 15,
+    "subSector": 20,
+    "partnerType": 25,
+    "location": 10,
+    "keywords": 20,
+    "exportReady": 5,
+    "dataQuality": 5
+  }
+}

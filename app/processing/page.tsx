@@ -3,27 +3,24 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import partnersData from "../data/partners.json";
 import { AppHeader } from "../components/AppHeader";
 import { useFlow } from "../lib/flow-context";
-import { emptyExtraction, findMatches } from "../lib/matching";
-import type { ExtractedProfile, Partner } from "../lib/types";
-
-const partners = partnersData as Partner[];
+import { emptyExtraction } from "../lib/matching";
+import type { ExtractedProfile } from "../lib/types";
 
 export default function ProcessingPage() {
   const router = useRouter();
   const ran = useRef(false);
-  const { t, profile, deck, setExtracted, setMatches, status, setStatus } = useFlow();
+  const { locale, t, profile, deck, extracted, setExtracted, setMatches, status, setStatus } = useFlow();
 
   useEffect(() => {
     if (ran.current) return;
     ran.current = true;
 
     async function runMatching() {
-      let extraction: ExtractedProfile | null = null;
+      let extraction: ExtractedProfile | null = extracted;
 
-      if (deck) {
+      if (deck && !extraction) {
         setStatus(t.status.extracting);
         const formData = new FormData();
         formData.append("deck", deck);
@@ -49,13 +46,20 @@ export default function ProcessingPage() {
         }
       }
 
-      const nextMatches = findMatches(partners, profile, extraction, {
-        category: t.results.reasonCategory,
-        keyword: t.results.reasonKeyword,
-        need: t.results.reasonNeed,
-        location: t.results.reasonLocation
+      const matchResponse = await fetch("/api/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale, profile, extracted: extraction })
       });
-      setMatches(nextMatches);
+
+      if (!matchResponse.ok) {
+        setStatus(t.validation.incomplete);
+        router.replace("/");
+        return;
+      }
+
+      const payload = await matchResponse.json();
+      setMatches(payload.matches || []);
 
       window.setTimeout(() => {
         router.replace("/matches");
@@ -63,7 +67,7 @@ export default function ProcessingPage() {
     }
 
     runMatching();
-  }, [deck, profile, router, setExtracted, setMatches, setStatus, t]);
+  }, [deck, extracted, locale, profile, router, setExtracted, setMatches, setStatus, t]);
 
   return (
     <main className="min-h-screen bg-ivory text-ink">

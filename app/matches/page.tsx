@@ -46,8 +46,9 @@ export default function MatchesPage() {
                 </div>
                 <h2 className="text-lg font-black leading-tight">{match.partner.Company}</h2>
                 <p className="mt-2 text-xs font-black uppercase tracking-[0.16em] text-gold">
-                  {categoryCopy[match.partner.Category as keyof typeof categoryCopy]?.[locale] || match.partner.Category}
+                  {categoryCopy[match.partner.IndustriID]?.[locale] || match.partner.IndustriID}
                 </p>
+                <p className="mt-3 text-xs font-bold text-ink/45">{match.partner.Role} · {match.partner.SubSector || "-"}</p>
                 <p className="mt-4 line-clamp-5 text-sm leading-6 text-ink/68">{match.partner.Product || "-"}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {match.reasons.slice(0, 2).map((reason) => (

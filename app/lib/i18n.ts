@@ -21,7 +21,7 @@ export const copy = {
       body: "CMC Connect membaca profil perusahaan dan deck kamu, lalu mencocokkan kebutuhan bisnis dengan database partner, supplier, dan pelaku industri dari ekosistem CMC.",
       primary: "Cari Partner Sekarang",
       secondary: "Lihat Database",
-      statOne: "219",
+      statOne: "589",
       statOneLabel: "partner terkurasi",
       statTwo: "11",
       statTwoLabel: "industri utama",
@@ -30,7 +30,7 @@ export const copy = {
     },
     form: {
       title: "Profil Perusahaan",
-      subtitle: "Isi manual atau unggah deck agar AI membantu merangkum profilmu.",
+      subtitle: "Isi field wajib, atau unggah deck agar profilmu bisa diringkas otomatis.",
       companyName: "Nama perusahaan",
       industry: "Industri",
       product: "Produk / layanan utama",
@@ -40,17 +40,23 @@ export const copy = {
       website: "Website",
       upload: "Upload deck",
       uploadHelp: "PDF atau PPTX dengan teks yang bisa dibaca.",
-      extract: "Ekstrak dengan DeepSeek",
+      extract: "Ringkas deck",
       matching: "Cari Match",
       reset: "Reset",
       placeholderCompany: "Contoh: PT Champion Nusantara",
       placeholderProduct: "Contoh: kopi premium, software inventory, jasa ekspor",
       placeholderNeeds: "Contoh: distributor nasional, supplier packaging, strategic partner",
-      placeholderPartner: "Contoh: supplier, distributor, reseller, investor partner",
+      placeholderPartner: "Pilih tipe partner",
       placeholderGeo: "Contoh: Jabodetabek, Jawa Timur, Indonesia"
     },
+    validation: {
+      partnerType: "Pilih dulu tipe partner yang kamu cari.",
+      industry: "Pilih industri atau gunakan Semua kategori.",
+      product: "Isi dulu produk atau layanan utama.",
+      incomplete: "Lengkapi field wajib sebelum mencari match."
+    },
     extraction: {
-      title: "Review Hasil AI",
+      title: "Review Hasil Ringkasan",
       body: "Edit ringkasan ini sebelum menjalankan matching.",
       summary: "Ringkasan",
       products: "Produk",
@@ -68,18 +74,22 @@ export const copy = {
       viewDetail: "Lihat Detail",
       back: "Kembali",
       reasonCategory: "Kategori industri selaras",
+      reasonPartnerType: "Tipe partner sesuai",
+      reasonSubSector: "Sub-sektor relevan",
       reasonKeyword: "Kata kunci bisnis cocok",
       reasonNeed: "Kebutuhan dan produk saling relevan",
       reasonLocation: "Lokasi/alamat relevan",
+      reasonExport: "Siap ekspor",
+      reasonDataQuality: "Data kontak lengkap",
       contact: "Kontak",
       product: "Produk",
       brand: "Brand",
       address: "Alamat"
     },
     processing: {
-      title: "Sedang memproses profilmu",
+      title: "Mencari match terbaik untukmu…",
       body: "CMC Connect membaca input, menormalisasi industri, dan menghitung kecocokan terbaik dari database partner.",
-      deck: "Mengekstrak deck dengan DeepSeek",
+      deck: "Memproses profilmu…",
       matching: "Mencocokkan dengan database CMC",
       ranking: "Menyusun top 5 rekomendasi"
     },
@@ -101,8 +111,8 @@ export const copy = {
       entries: "partner"
     },
     status: {
-      extracting: "Membaca deck dan mengekstrak profil...",
-      missingKey: "DEEPSEEK_API_KEY belum tersedia. Kamu tetap bisa memakai form manual.",
+      extracting: "Memproses profilmu…",
+      missingKey: "Ringkasan deck belum tersedia. Kamu tetap bisa memakai form manual.",
       extractFailed: "Ekstraksi gagal. Coba file lain atau lanjut dengan form manual.",
       unsupported: "Format belum didukung. Gunakan PDF atau PPTX."
     }
@@ -127,7 +137,7 @@ export const copy = {
       body: "CMC Connect reads your company profile and deck, then matches your needs with partners, suppliers, and industry players from the CMC ecosystem.",
       primary: "Find Partners",
       secondary: "Browse Database",
-      statOne: "219",
+      statOne: "589",
       statOneLabel: "curated partners",
       statTwo: "11",
       statTwoLabel: "core industries",
@@ -136,7 +146,7 @@ export const copy = {
     },
     form: {
       title: "Company Profile",
-      subtitle: "Complete the form manually or upload a deck so AI can summarize your profile.",
+      subtitle: "Complete the required fields, or upload a deck so your profile can be summarized automatically.",
       companyName: "Company name",
       industry: "Industry",
       product: "Main product / service",
@@ -146,17 +156,23 @@ export const copy = {
       website: "Website",
       upload: "Upload deck",
       uploadHelp: "PDF or PPTX with readable text.",
-      extract: "Extract with DeepSeek",
+      extract: "Summarize deck",
       matching: "Find Matches",
       reset: "Reset",
       placeholderCompany: "Example: PT Champion Nusantara",
       placeholderProduct: "Example: premium coffee, inventory software, export service",
       placeholderNeeds: "Example: national distributor, packaging supplier, strategic partner",
-      placeholderPartner: "Example: supplier, distributor, reseller, investor partner",
+      placeholderPartner: "Choose partner type",
       placeholderGeo: "Example: Greater Jakarta, East Java, Indonesia"
     },
+    validation: {
+      partnerType: "Please choose what type of partner you're looking for.",
+      industry: "Please choose an industry or use All categories.",
+      product: "Please enter your main product or service.",
+      incomplete: "Complete the required fields before finding matches."
+    },
     extraction: {
-      title: "Review AI Extraction",
+      title: "Review Summary",
       body: "Edit this summary before running the match.",
       summary: "Summary",
       products: "Products",
@@ -174,18 +190,22 @@ export const copy = {
       viewDetail: "View Detail",
       back: "Back",
       reasonCategory: "Aligned industry category",
+      reasonPartnerType: "Partner type fit",
+      reasonSubSector: "Relevant sub-sector",
       reasonKeyword: "Matching business keywords",
       reasonNeed: "Needs and products are relevant",
       reasonLocation: "Relevant location/address",
+      reasonExport: "Export-ready",
+      reasonDataQuality: "Complete contact data",
       contact: "Contact",
       product: "Product",
       brand: "Brand",
       address: "Address"
     },
     processing: {
-      title: "Processing your profile",
+      title: "Finding your best matches…",
       body: "CMC Connect reads your inputs, normalizes the industry, and scores the strongest fits from the partner database.",
-      deck: "Extracting deck with DeepSeek",
+      deck: "Analyzing your profile…",
       matching: "Matching against the CMC database",
       ranking: "Ranking the top 5 recommendations"
     },
@@ -207,8 +227,8 @@ export const copy = {
       entries: "partners"
     },
     status: {
-      extracting: "Reading the deck and extracting profile...",
-      missingKey: "DEEPSEEK_API_KEY is not configured. You can still use the manual form.",
+      extracting: "Analyzing your profile…",
+      missingKey: "Deck summary is not available. You can still use the manual form.",
       extractFailed: "Extraction failed. Try another file or continue with the manual form.",
       unsupported: "Unsupported format. Use PDF or PPTX."
     }

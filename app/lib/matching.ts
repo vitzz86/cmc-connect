@@ -1,4 +1,4 @@
-import { categories, inferCategory } from "./categories";
+import { allCategoryValue, allProvinceValue, categories, roleIntentMatrix, scoreWeights } from "./categories";
 import type { CompanyProfile, ExtractedProfile, MatchResult, Partner } from "./types";
 
 const stopWords = new Set([
@@ -18,7 +18,9 @@ const stopWords = new Set([
   "partner",
   "supplier",
   "perusahaan",
-  "company"
+  "company",
+  "find",
+  "cari"
 ]);
 
 function tokenize(text: string) {
@@ -26,22 +28,45 @@ function tokenize(text: string) {
     new Set(
       text
         .toLowerCase()
-        .replace(/[^a-z0-9\s&]/g, " ")
-        .split(/\s+/)
+        .replace(/[^a-z0-9\s&/]/g, " ")
+        .split(/[\s,/]+/)
         .map((token) => token.trim())
         .filter((token) => token.length > 2 && !stopWords.has(token))
     )
   );
 }
 
-function overlapScore(tokens: string[], text: string, weight: number) {
+function keywordFit(tokens: string[], text: string) {
   if (!tokens.length) return { score: 0, matches: [] as string[] };
   const haystack = text.toLowerCase();
   const matches = tokens.filter((token) => haystack.includes(token));
+  const denominator = Math.min(Math.max(tokens.length, 1), 5);
+
   return {
-    score: Math.min(weight, matches.length * Math.max(4, Math.round(weight / 5))),
+    score: Math.min(1, matches.length / denominator),
     matches: matches.slice(0, 5)
   };
+}
+
+function isNeutralCategory(value: string) {
+  return !value || value === allCategoryValue;
+}
+
+function isNeutralProvince(value: string) {
+  return !value || value === allProvinceValue;
+}
+
+export function validateMatchProfile(profile: CompanyProfile) {
+  return {
+    partnerType: Boolean(profile.partnerType),
+    industry: Boolean(profile.industry),
+    product: Boolean(profile.product.trim())
+  };
+}
+
+export function isMatchProfileValid(profile: CompanyProfile) {
+  const validity = validateMatchProfile(profile);
+  return validity.partnerType && validity.industry && validity.product;
 }
 
 export function buildProfileText(profile: CompanyProfile, extracted?: ExtractedProfile | null) {
@@ -68,60 +93,92 @@ export function findMatches(
   extracted: ExtractedProfile | null,
   reasonLabels: {
     category: string;
+    subSector: string;
+    partnerType: string;
     keyword: string;
-    need: string;
     location: string;
+    exportReady: string;
+    dataQuality: string;
   }
 ): MatchResult[] {
-  const profileText = buildProfileText(profile, extracted);
-  const inferred = inferCategory(profile.industry || extracted?.category || profileText);
-  const category = categories.find((item) => item === profile.industry) || inferred;
-  const keywordTokens = tokenize(profileText);
-  const needTokens = tokenize(`${profile.needs} ${profile.partnerType} ${extracted?.needs?.join(" ") || ""}`);
-  const locationTokens = tokenize(profile.geography);
+  const productTokens = tokenize(`${profile.product} ${extracted?.products?.join(" ") || ""}`);
+  const contextTokens = tokenize(buildProfileText(profile, extracted));
 
   return partners
     .map((partner) => {
-      let score = 0;
+      const partnerText = [
+        partner.Company,
+        partner.Product,
+        partner.Brand,
+        partner.Category,
+        partner.IndustriID,
+        partner.Province,
+        partner.Role,
+        partner.SubSector,
+        partner.Keywords,
+        partner.MatchTags
+      ].join(" ");
+
+      const categoryScore = isNeutralCategory(profile.industry) ? 0 : partner.IndustriID === profile.industry ? 1 : 0;
+      const subSector = keywordFit(productTokens, partner.SubSector || "");
+      const keyword = keywordFit(contextTokens, partnerText);
+      const partnerTypeScore = roleIntentMatrix[partner.Role]?.[profile.partnerType] || 0;
+      const locationScore = isNeutralProvince(profile.geography) ? 0 : partner.Province === profile.geography ? 1 : 0;
+      const exportScore = partner.ExportReady === "Yes" ? 1 : 0;
+      const qualityScore = Math.max(0, Math.min(1, Number(partner.DataQuality || 0) / 100));
+
+      const score =
+        categoryScore * scoreWeights.category +
+        subSector.score * scoreWeights.subSector +
+        partnerTypeScore * scoreWeights.partnerType +
+        locationScore * scoreWeights.location +
+        keyword.score * scoreWeights.keywords +
+        exportScore * scoreWeights.exportReady +
+        qualityScore * scoreWeights.dataQuality;
+
       const reasons = new Set<string>();
-      const partnerText = `${partner.Company} ${partner.Category} ${partner.Product} ${partner.Brand} ${partner.Address}`;
-
-      if (category && partner.Category === category) {
-        score += 38;
-        reasons.add(reasonLabels.category);
-      }
-
-      const keyword = overlapScore(keywordTokens, partnerText, 34);
-      score += keyword.score;
+      if (partnerTypeScore >= 1) reasons.add(reasonLabels.partnerType);
+      if (categoryScore) reasons.add(reasonLabels.category);
+      if (subSector.score > 0) reasons.add(reasonLabels.subSector);
       if (keyword.matches.length) reasons.add(`${reasonLabels.keyword}: ${keyword.matches.join(", ")}`);
-
-      const need = overlapScore(needTokens, `${partner.Product} ${partner.Brand} ${partner.Category}`, 18);
-      score += need.score;
-      if (need.matches.length) reasons.add(reasonLabels.need);
-
-      const location = overlapScore(locationTokens, partner.Address, 10);
-      score += location.score;
-      if (location.matches.length) reasons.add(reasonLabels.location);
+      if (locationScore) reasons.add(reasonLabels.location);
+      if (exportScore) reasons.add(reasonLabels.exportReady);
+      if (qualityScore >= 0.9) reasons.add(reasonLabels.dataQuality);
 
       return {
         partner,
-        score: Math.min(100, score),
-        reasons: Array.from(reasons).slice(0, 3)
+        score: Math.round(score),
+        reasons: Array.from(reasons).slice(0, 4),
+        signals: {
+          category: categoryScore,
+          subSector: subSector.score,
+          partnerType: partnerTypeScore,
+          location: locationScore,
+          keywords: keyword.score,
+          exportReady: exportScore,
+          dataQuality: qualityScore
+        }
       };
     })
     .filter((result) => result.score > 0)
-    .sort((a, b) => b.score - a.score || a.partner.Company.localeCompare(b.partner.Company))
+    .sort((a, b) => {
+      return (
+        b.score - a.score ||
+        (b.signals?.dataQuality || 0) - (a.signals?.dataQuality || 0) ||
+        a.partner.Company.localeCompare(b.partner.Company)
+      );
+    })
     .slice(0, 5);
 }
 
 export function emptyProfile(): CompanyProfile {
   return {
     companyName: "",
-    industry: "",
+    industry: allCategoryValue,
     product: "",
     needs: "",
     partnerType: "",
-    geography: "",
+    geography: allProvinceValue,
     website: ""
   };
 }
@@ -137,3 +194,5 @@ export function emptyExtraction(): ExtractedProfile {
     warnings: []
   };
 }
+
+export { categories };

@@ -2,6 +2,7 @@ export type Locale = "id" | "en";
 
 export type Partner = {
   id: string;
+  No: string;
   Company: string;
   Address: string;
   CP: string;
@@ -11,6 +12,14 @@ export type Partner = {
   Product: string;
   Brand: string;
   Category: string;
+  Province: string;
+  Role: string;
+  SubSector: string;
+  Keywords: string;
+  ExportReady: string;
+  DataQuality: number;
+  MatchTags: string;
+  IndustriID: string;
   searchText: string;
 };
 
@@ -38,4 +47,13 @@ export type MatchResult = {
   partner: Partner;
   score: number;
   reasons: string[];
+  signals?: {
+    category: number;
+    subSector: number;
+    partnerType: number;
+    location: number;
+    keywords: number;
+    exportReady: number;
+    dataQuality: number;
+  };
 };

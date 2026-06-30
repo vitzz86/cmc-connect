@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CMC Connect",
-  description: "AI-powered partner and supplier matchmaking for CEO Masterclass champions."
+  description: "Partner and supplier matchmaking for CEO Masterclass champions."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
