@@ -39,8 +39,7 @@ export default function Home() {
       const payload = await response.json();
 
       if (!response.ok) {
-        const missingKey = String(payload.error || "").includes("DEEPSEEK_API_KEY");
-        setStatus(missingKey ? t.status.missingKey : t.status.extractFailed);
+        setStatus(payload.code === "extraction_setup_missing" ? t.status.missingKey : t.status.extractFailed);
         return;
       }
 

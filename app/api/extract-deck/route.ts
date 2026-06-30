@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     if (!process.env.DEEPSEEK_API_KEY) {
-      return NextResponse.json({ error: "DEEPSEEK_API_KEY is not configured." }, { status: 500 });
+      return NextResponse.json({ code: "extraction_setup_missing", error: "Deck extraction is not configured." }, { status: 500 });
     }
 
     const fileName = file.name.toLowerCase();

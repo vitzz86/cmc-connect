@@ -38,8 +38,7 @@ export default function ProcessingPage() {
             setExtracted(extraction);
             setStatus("");
           } else {
-            const missingKey = String(payload.error || "").includes("DEEPSEEK_API_KEY");
-            setStatus(missingKey ? t.status.missingKey : t.status.extractFailed);
+            setStatus(payload.code === "extraction_setup_missing" ? t.status.missingKey : t.status.extractFailed);
           }
         } catch {
           setStatus(t.status.extractFailed);
