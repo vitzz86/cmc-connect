@@ -108,7 +108,9 @@ export const copy = {
       all: "Semua kategori",
       showing: "Menampilkan",
       of: "dari",
-      entries: "partner"
+      entries: "partner",
+      noResults: "Belum ada partner yang cocok dengan filter ini. Coba kategori lain atau hapus pencarian.",
+      clearFilters: "Reset filter"
     },
     status: {
       extracting: "Memproses profilmu…",
@@ -224,7 +226,9 @@ export const copy = {
       all: "All categories",
       showing: "Showing",
       of: "of",
-      entries: "partners"
+      entries: "partners",
+      noResults: "No partners match this filter yet. Try another category or clear your search.",
+      clearFilters: "Reset filters"
     },
     status: {
       extracting: "Analyzing your profile…",

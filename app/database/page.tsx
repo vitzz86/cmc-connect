@@ -8,6 +8,26 @@ import { AppHeader } from "../components/AppHeader";
 import { useFlow } from "../lib/flow-context";
 import type { Partner } from "../lib/types";
 
+function normalizeSearch(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/&/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function matchesCategory(partner: Partner, categoryFilter: string) {
+  if (!categoryFilter) return true;
+
+  const englishCategory = categoryCopy[categoryFilter]?.en;
+
+  return (
+    partner.IndustriID === categoryFilter ||
+    partner.Category === categoryFilter ||
+    partner.Category === englishCategory
+  );
+}
+
 export default function DatabasePage() {
   const { locale, t } = useFlow();
   const [search, setSearch] = useState("");
@@ -32,13 +52,24 @@ export default function DatabasePage() {
   }, []);
 
   const filteredPartners = useMemo(() => {
-    const query = search.toLowerCase().trim();
+    const queryTokens = normalizeSearch(search).split(" ").filter(Boolean);
+
     return partners.filter((partner) => {
-      const categoryMatch = !categoryFilter || partner.Category === categoryFilter;
-      const searchMatch = !query || partner.searchText.includes(query);
+      const categoryMatch = matchesCategory(partner, categoryFilter);
+      const searchMatch =
+        queryTokens.length === 0 ||
+        queryTokens.every((token) => normalizeSearch(partner.searchText).includes(token));
+
       return categoryMatch && searchMatch;
     });
   }, [partners, search, categoryFilter]);
+
+  const hasEmptyResults = partners.length > 0 && filteredPartners.length === 0;
+
+  function resetFilters() {
+    setSearch("");
+    setCategoryFilter("");
+  }
 
   return (
     <main className="min-h-screen bg-ivory text-ink">
@@ -83,6 +114,15 @@ export default function DatabasePage() {
           {partners.length === 0 ? (
             <div className="border border-dashed border-ink/20 bg-white p-8 text-sm font-semibold text-ink/60 md:col-span-2 xl:col-span-3">
               {t.status.extracting}
+            </div>
+          ) : null}
+
+          {hasEmptyResults ? (
+            <div className="border border-dashed border-ink/20 bg-white p-8 md:col-span-2 xl:col-span-3">
+              <p className="text-sm font-semibold text-ink/60">{t.database.noResults}</p>
+              <button className="mt-5 border border-ink/15 px-5 py-3 text-sm font-black text-ink/70" type="button" onClick={resetFilters}>
+                {t.database.clearFilters}
+              </button>
             </div>
           ) : null}
 
